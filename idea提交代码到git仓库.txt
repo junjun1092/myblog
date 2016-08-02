@@ -1,0 +1,51 @@
+1 首先设置idea中的git环境，File-->Setting-->Version Control 找到github，在host一栏填写github的地址：github.com
+Login填写github账号，Password填写github密码，测试一下；
+2 然后再设置git，还是再File-->Setting-->Version Control中，在Path to Git executable一栏，填写本地git的安装路径，test
+然后apply，这样idea对于git的相关配置就可以了
+本地项目的提交：
+1 创建本地仓库
+在idea中任意创建一个项目，在idea菜单栏中选择VCS，选择import to Versioin Control，选择 Create git Repository，选择一个存放的路径，
+2 将项目提交到本地的git
+选中项目右键，git-->Add-->commit，一定要先add再提交，此时项目文件就添加到本地仓库了
+关于远程仓库的配置
+1 在github上创建一个仓库
+2 通过git shell配置远程仓库
+  复制刚才创建的远程仓库的ssh路径，在git shell中键入如下脚本，git remote add origin + 远程仓库key
+  然后 git push -u origin master,这里可能会报错：
+  $ git push -u origin master
+  Permission denied (publickey).
+  fatal: Could not read from remote repository.
+
+  Please make sure you have the correct access rights
+  and the repository exists.
+  这里重新生成一下对应的ssh key，执行命令
+$ ssh-keygen -t rsa -C "zhaojunjun0531@126.com"
+将生成的密匙添加到远程github中，然后还出现错误
+$ git push -u origin master
+To git@github.com:junjun1092/myblog.git
+ ! [rejected]        master -> master (fetch first)
+error: failed to push some refs to 'git@github.com:junjun1092/myblog.git'
+hint: Updates were rejected because the remote contains work that you do
+hint: not have locally. This is usually caused by another repository pushing
+hint: to the same ref. You may want to first integrate the remote changes
+hint: (e.g., 'git pull ...') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+需要先将远程项目pull下来，执行命令
+$ git pull git@github.com:junjun1092/myblog.git
+这个时候就把远程文件更新下来了
+然后$ git push -u origin master
+这时候是把文件都提交到本地的git仓库中？？？
+感觉git有三层，一层是本地仓库，一层是远程github，还有另外一层不知道是什么，这里的git push，应该是从本地git仓库提交到了这一层数据了吧
+
+
+回到idea，选择项目-->Git-->Repository-->Push即可以将本地的文件推送到远程仓库中，然后刷新github仓库就可以看到刚才提交的文件了
+
+
+注意：在执行 通过Gitshell配置远程仓库的时候可能会出现一些意外:
+1.  提示这个仓库已经存在(fatal: remote origin already exists) ，如果是这样 就不需要使用add + 地址的形式了 ,请修改为:
+git remote rm origin
+
+2.提示不能移除配置信息错误(.error: Could not remove config section 'remote.origin')
+解决方案: 在window/用户下面找到.gitconfig文件 (本文路径为:C:\Users\Vincent_2\.gitconfig)
+打开它把里面的[remote "origin"]那一行删掉   重启gitshell   再重新配置。
+
